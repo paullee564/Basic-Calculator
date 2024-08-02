@@ -1,66 +1,196 @@
-import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import javax.swing.border.Border;
-import javax.swing.BorderFactory;
 
-public class calculator extends JPanel {
-   private JButton[][] board;
-   private int[][] matrix;
-   private JButton reset;
-   private JLabel window;
-   private Color blue = Color.decode("#372387");
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
 
-   private JButton one;
-   private JButton two;
-   private JButton three;
-   private JButton four;
-   private JButton five;
-   private JButton six;
-   private JButton seven;
-   private JButton eight;
-   private JButton nine;
-   private JButton zero;
-   private JButton multiply;
-   private JButton remainder;
-   private JButton add;
-   private JButton subtract;
-   private JButton divide;
-   private JButton clear;
-   private JButton enter;
-   private JButton period;
-   private JButton equal;
+public class Calculator implements ActionListener {
+   JFrame frame;
+   JTextField textField;
+   JButton[] numButtons = new JButton[10];
+   JButton[] funcButtons = new JButton[12];
+   JButton addB, subtractB, multiplyB, divideB, equalsB, clearB,
+         deleteB, decimalB, negativeB, sqrtB, squareB, remainderB;
+   int decimalCounter = 0;
+   JPanel panel;
 
-   public static void main(String[] args) {
-      JFrame frame = new JFrame("Calculator");
-      frame.setSize(400, 600);
-      frame.setLocation(200, 100);
-      frame.setContentPane(new calculator());
+   Font font = new Font("Times New Roman", Font.BOLD, 24);
+
+   double n1 = 0, n2 = 0, result = 0;
+   char operator;
+
+   public Calculator() {
+      frame = new JFrame("Calculator");
       frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+      frame.setSize(420, 550);
+      frame.setLayout(null);
+
+      textField = new JTextField();
+      textField.setBounds(50, 25, 300, 50);
+      textField.setFont(font);
+      textField.setEditable(false);
+
+      addB = new JButton("+");
+      subtractB = new JButton("-");
+      multiplyB = new JButton("*");
+      divideB = new JButton("/");
+      equalsB = new JButton("=");
+      clearB = new JButton("C");
+      deleteB = new JButton("Del");
+      decimalB = new JButton(".");
+      negativeB = new JButton("+/-");
+      sqrtB = new JButton("√");
+      squareB = new JButton("x²");
+      remainderB = new JButton("%");
+
+      funcButtons[0] = addB;
+      funcButtons[1] = subtractB;
+      funcButtons[2] = multiplyB;
+      funcButtons[3] = divideB;
+      funcButtons[4] = equalsB;
+      funcButtons[5] = clearB;
+      funcButtons[6] = deleteB;
+      funcButtons[7] = decimalB;
+      funcButtons[8] = negativeB;
+      funcButtons[9] = sqrtB;
+      funcButtons[10] = squareB;
+      funcButtons[11] = remainderB;
+
+      for (int i = 0; i < funcButtons.length; i++) {
+         funcButtons[i].addActionListener(this);
+         funcButtons[i].setFont(font);
+         funcButtons[i].setFocusable(false);
+      }
+
+      for (int i = 0; i < numButtons.length; i++) {
+         numButtons[i] = new JButton(String.valueOf(i));
+         numButtons[i].setFont(font);
+         numButtons[i].setFocusable(false);
+         numButtons[i].addActionListener(this);
+      }
+
+      deleteB.setBounds(50, 430, 145, 50);
+      clearB.setBounds(205, 430, 145, 50);
+
+      panel = new JPanel();
+      panel.setBounds(50, 100, 300, 300);
+      panel.setLayout(new GridLayout(5, 4, 10, 10));
+      panel.setBackground(Color.CYAN);
+
+      panel.add(numButtons[1]);
+      panel.add(numButtons[2]);
+      panel.add(numButtons[3]);
+      panel.add(addB);
+      panel.add(numButtons[4]);
+      panel.add(numButtons[5]);
+      panel.add(numButtons[6]);
+      panel.add(subtractB);
+      panel.add(numButtons[7]);
+      panel.add(numButtons[8]);
+      panel.add(numButtons[9]);
+      panel.add(multiplyB);
+      panel.add(negativeB);
+      panel.add(numButtons[0]);
+      panel.add(decimalB);
+      panel.add(equalsB);
+      panel.add(divideB);
+      panel.add(sqrtB);
+      panel.add(squareB);
+      panel.add(remainderB);
+
+      frame.add(panel);
+      frame.add(deleteB);
+      frame.add(clearB);
+      frame.add(textField);
       frame.setVisible(true);
    }
 
-   public calculator() {
-      setLayout(new BorderLayout());
+   public void actionPerformed(ActionEvent e) {
+      for (int i = 0; i < numButtons.length; i++) {
+         if (e.getSource() == numButtons[i]) {
+            textField.setText(textField.getText().concat(String.valueOf(i)));
+         }
+      }
+      if (e.getSource() == decimalB) {
+         if (decimalCounter == 0) {
+            textField.setText(textField.getText().concat("."));
+            decimalCounter++;
+         }
 
-      window = new JLabel("input", SwingConstants.RIGHT);
-      window.setPreferredSize(new Dimension(200, 100));
-      window.setBackground(Color.white);
-      window.setOpaque(true);
-      window.setFont(new Font("Calculator", Font.BOLD, 50));
-      Border border = BorderFactory.createLineBorder(blue, 12);
-      window.setBorder(border);
-      add(window, BorderLayout.NORTH);
+      }
+      if (e.getSource() == addB) {
+         n1 = Double.parseDouble(textField.getText());
+         operator = '+';
+         textField.setText("");
+         // textField.setText(textField.getText().concat(" + "));
+      }
+      if (e.getSource() == subtractB) {
+         n1 = Double.parseDouble(textField.getText());
+         operator = '-';
+         textField.setText("");
+      }
+      if (e.getSource() == multiplyB) {
+         n1 = Double.parseDouble(textField.getText());
+         operator = '*';
+         textField.setText("");
+      }
+      if (e.getSource() == divideB) {
+         n1 = Double.parseDouble(textField.getText());
+         operator = '/';
+         textField.setText("");
+      }
+      if (e.getSource() == equalsB) {
+         n2 = Double.parseDouble(textField.getText());
 
-      Border border1 = BorderFactory.createLineBorder(blue, 8);
-      JPanel buttons = new JPanel();
-      buttons.setSize(300, 500);
-      buttons.setBackground(blue);
-      buttons.setLayout(new GridLayout(4, 5));
-      add(buttons, BorderLayout.CENTER);
-      board = new JButton[4][5];
-      matrix = new int[4][5];
-
+         switch (operator) {
+            case '+':
+               result = n1 + n2;
+               break;
+            case '-':
+               result = n1 - n2;
+               break;
+            case '*':
+               result = n1 * n2;
+               break;
+            case '/':
+               result = n1 / n2;
+               break;
+         }
+         textField.setText(String.valueOf(result));
+         n1 = result;
+      }
+      if (e.getSource() == clearB) {
+         textField.setText("");
+         decimalCounter = 0;
+      }
+      if (e.getSource() == deleteB) {
+         String string = textField.getText();
+         textField.setText("");
+         for (int i = 0; i < string.length() - 1; i++) {
+            if (string.charAt(i) == '.') {
+               --decimalCounter;
+            }
+            textField.setText(textField.getText() + string.charAt(i));
+         }
+      }
+      if (e.getSource() == negativeB) {
+         double temp = Double.parseDouble(textField.getText());
+         temp *= -1;
+         textField.setText(String.valueOf(temp));
+      }
+      if (e.getSource() == squareB) {
+         double temp = Double.parseDouble(textField.getText());
+         textField.setText(String.valueOf(temp * temp));
+      }
+      if (e.getSource() == sqrtB) {
+         double temp = Double.parseDouble(textField.getText());
+         textField.setText(String.valueOf(Math.sqrt(temp)));
+      }
    }
 
+   public static void main(String[] args) {
+      Calculator calculator = new Calculator();
+   }
 }
